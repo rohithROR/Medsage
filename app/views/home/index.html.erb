@@ -1,2 +1,23 @@
-<h1>Home#index</h1>
-<p>Find me in app/views/home/index.html.erb</p>
+<div class="csv_import">
+    <% if flash[:notice].present? %>
+        <div class="success_message">
+            <p> <%= flash[:notice] %></p>
+        </div>
+    <%end%>
+    <% if flash[:error].present? %>
+        <div class="error_message">
+            <p><%= flash[:error] %></p>
+        </div>
+    <%end%>
+    <div class="form">
+        <%= form_tag({controller: "home", action: "file_upload", method: 'post', remote: true}, multipart: true) do %>
+            <div class="field">
+            <%= label_tag :please_upload_csv_file %>
+            <%= file_field_tag :file %>
+            </div>
+            <div class="actions">
+            <%= submit_tag 'Submit' %>
+            </div>
+        <% end %>
+    </div>
+</div>
