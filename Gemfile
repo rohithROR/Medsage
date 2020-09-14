@@ -32,6 +32,8 @@ gem 'activerecord-session_store'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  #gem 'rspec-rails'
+  gem 'rspec-rails', git: 'https://github.com/rspec/rspec-rails', branch: "4-0-maintenance"
 end
 
 group :development do

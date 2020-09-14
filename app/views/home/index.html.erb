@@ -8,8 +8,8 @@
     <div class="form">
         <%= form_tag({controller: "home", action: "file_upload", method: 'post', remote: true}, multipart: true) do %>
             <div class="field">
-            <%= label_tag :please_upload_zip_file %>
-            <%= file_field_tag :file, accept: '.zip' %>
+            <%= label_tag :please_upload_file %>
+            <%= file_field_tag :file, accept: '.zip,.csv' %>
             </div>
             <div class="actions">
             <%= submit_tag 'Submit' %>

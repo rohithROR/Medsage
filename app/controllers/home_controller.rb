@@ -12,11 +12,11 @@ class HomeController < ApplicationController
 
   def file_upload
     @error = []
-    zip_file = Zip::File.open(params[:file])
-    zip_file.sort.each do |entry|
-      if entry.file? && File.extname(entry.name) == '.csv'
-        update_records(entry)
-      end # csv file check condition
+    file_ext = File.extname(params[:file]).downcase
+    if file_ext == '.zip'
+      update_records_with_zip
+    elsif file_ext == '.csv'
+      update_records_with_csv
     end
     flash_msg = {}
     @error.present? ? flash_msg[:error] = @error : flash_msg[:notice] = I18n.t('controllers.home.file_upload.success')

@@ -11,9 +11,25 @@ module HomeHelper
     ["order_id", "patient_id", "state"]
   end
 
-  def update_records(entry)
-    csv_text = entry.get_input_stream.read
-    @csv = CSV.parse(csv_text)
+  def update_records_with_zip
+    zip_file = Zip::File.open(params[:file])
+    zip_file.sort.each do |entry|
+      if entry.file? && File.extname(entry.name) == '.csv'
+        csv_text = entry.get_input_stream.read
+        @csv = CSV.parse(csv_text)
+        @filename = entry.name
+        update_records
+      end # csv file check condition
+    end
+  end
+
+  def update_records_with_csv
+    @csv = CSV.read(params[:file])
+    @filename = params[:file].original_filename
+    update_records
+  end
+
+  def update_records
     @headers = @csv.first
     case @headers.sort
     when patient_headers
@@ -21,9 +37,9 @@ module HomeHelper
     when order_headers
       update_order
     when invoice_headers
-      update_invoice(entry)
+      update_invoice
     else
-      @error.push(I18n.t('controllers.home.file_upload.invalid_file', file_name: entry.name))
+      @error.push(I18n.t('controllers.home.file_upload.invalid_file', file_name: @filename))
     end
   end
 
@@ -43,14 +59,14 @@ module HomeHelper
     end
   end
 
-  def update_invoice(entry)
+  def update_invoice
     data = get_data
     data.each_with_index do |record,index|
       invoice = Invoice.create(record)
       @error.push(
         I18n.t(
           'controllers.home.file_upload.invalid_records',
-          file_name: entry.name,
+          file_name: @filename,
           line_num: index+1,
           error: invoice.errors.full_messages.join(','))
         ) if invoice.errors.present?
