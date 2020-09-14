@@ -4,20 +4,24 @@
             <p> <%= flash[:notice] %></p>
         </div>
     <%end%>
-    <% if flash[:error].present? %>
-        <div class="error_message">
-            <p><%= flash[:error] %></p>
-        </div>
-    <%end%>
+
     <div class="form">
         <%= form_tag({controller: "home", action: "file_upload", method: 'post', remote: true}, multipart: true) do %>
             <div class="field">
-            <%= label_tag :please_upload_csv_file %>
-            <%= file_field_tag :file %>
+            <%= label_tag :please_upload_zip_file %>
+            <%= file_field_tag :file, accept: '.zip' %>
             </div>
             <div class="actions">
             <%= submit_tag 'Submit' %>
             </div>
         <% end %>
     </div>
+
+    <% if flash[:error].present? %>
+        <div class="error_message">
+            <% flash[:error].each do |error| %>
+                <p><%= error %></p>
+            <%end%>
+        </div>
+    <%end%>
 </div>

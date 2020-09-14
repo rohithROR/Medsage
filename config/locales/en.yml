@@ -34,6 +34,6 @@ en:
   controllers:
     home:
       file_upload:
-        success: "%{parameter} successfully updated."
-        failure: "Something went wrong."
-        invalid_file: "Please upload a valid file with valid columns."
+        success: "The data has been successfully updated."
+        invalid_records: "The file %{file_name}, has invalid records. Error in Row %{line_num}: %{error}."
+        invalid_file: "The file %{file_name}, id invalid. Please upload a valid file with valid columns."

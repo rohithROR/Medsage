@@ -3,10 +3,11 @@
 // You can use Sass (SCSS) here: https://sass-lang.com/
 
 .csv_import {
-    margin: 5% 30%;
+    margin: 5% 25%;
 }
 .csv_import .form{
     margin-top: 2%;
+    margin-bottom: 2%;
 }
 
 .csv_import .form div {
@@ -19,16 +20,21 @@
 }
 
 .csv_import .success_message {
-    text-align:center;
-    font-size: 16px;
+    text-align:left;
+    font-size: 12px;
+    border: 1px solid;
     color: green;
+    padding: 10px;
 }
 
 .csv_import .error_message {
-    text-align: center;
-    font-size: 16px;
+    text-align: left;
+    font-size: 12px;
+    border: 1px solid;
     color: red;
+    padding: 10px;
 }
+
 
 .orders_list table {
     border-collapse: collapse;

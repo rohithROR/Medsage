@@ -11,41 +11,49 @@ module HomeHelper
     ["order_id", "patient_id", "state"]
   end
 
+  def update_records(entry)
+    csv_text = entry.get_input_stream.read
+    @csv = CSV.parse(csv_text)
+    @headers = @csv.first
+    case @headers.sort
+    when patient_headers
+      update_patient
+    when order_headers
+      update_order
+    when invoice_headers
+      update_invoice(entry)
+    else
+      @error.push(I18n.t('controllers.home.file_upload.invalid_file', file_name: entry.name))
+    end
+  end
+
   def update_patient
-    begin
-      data = get_data
-      data.each do |record|
-        patient = Patient.find_by_patient_id(record["patient_id"])
-        patient.present? ? patient.update(record) : Patient.create(record)
-      end
-      flash[:notice] = I18n.t('controllers.home.file_upload.success', parameter: "Patients")
-    rescue
-      flash[:error] = I18n.t 'controllers.home.file_upload.failure'
+    data = get_data
+    data.each do |record|
+      patient = Patient.find_by_patient_id(record["patient_id"])
+      patient.present? ? patient.update(record) : Patient.create(record)
     end
   end
 
   def update_order
-    begin
-      data = get_data
-      data.each do |record|
-        order = Order.find_by_order_id(record["order_id"])
-        order.present? ? order.update(record) : Order.create(record)
-      end
-      flash[:notice] = I18n.t('controllers.home.file_upload.success', parameter: "Orders")
-    rescue
-      flash[:error] = I18n.t 'controllers.home.file_upload.failure'
+    data = get_data
+    data.each do |record|
+      order = Order.find_by_order_id(record["order_id"])
+      order.present? ? order.update(record) : Order.create(record)
     end
   end
 
-  def update_invoice
-    begin
-      data = get_data
-      data.each do |record|
-        invoice = Invoice.create(record)
-      end
-      flash[:notice] = I18n.t('controllers.home.file_upload.success', parameter: "Invoices")
-    rescue
-      flash[:error] = I18n.t 'controllers.home.file_upload.failure'
+  def update_invoice(entry)
+    data = get_data
+    data.each_with_index do |record,index|
+      invoice = Invoice.create(record)
+      @error.push(
+        I18n.t(
+          'controllers.home.file_upload.invalid_records',
+          file_name: entry.name,
+          line_num: index+1,
+          error: invoice.errors.full_messages.join(','))
+        ) if invoice.errors.present?
     end
   end
 

@@ -1,6 +1,7 @@
 class HomeController < ApplicationController
   include HomeHelper
   require 'csv'
+  require 'zip'
 
   def index
   end
@@ -10,18 +11,15 @@ class HomeController < ApplicationController
   end
 
   def file_upload
-    @csv = CSV.read(params[:file])
-    @headers = @csv.first
-    case @headers.sort
-    when patient_headers
-      update_patient
-    when order_headers
-      update_order
-    when invoice_headers
-      update_invoice
-    else
-      I18n.t 'controllers.home.file_upload.invalid_file'
+    @error = []
+    zip_file = Zip::File.open(params[:file])
+    zip_file.sort.each do |entry|
+      if entry.file? && File.extname(entry.name) == '.csv'
+        update_records(entry)
+      end # csv file check condition
     end
-    render :action => 'index'
+    flash_msg = {}
+    @error.present? ? flash_msg[:error] = @error : flash_msg[:notice] = I18n.t('controllers.home.file_upload.success')
+    redirect_to root_path, flash: flash_msg
   end
 end
