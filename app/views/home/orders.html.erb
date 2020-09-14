@@ -1,0 +1,18 @@
+<div class="orders_list">
+    <table>
+    <tr>
+        <th>Order ID</th>
+        <th>Order Category</th>
+        <th>Patient Name</th>
+        <th>Active Invoices</th>
+    </tr>
+    <% @orders.each do |order| %>
+        <tr>
+            <td> <%= order.order_id %> </td>
+            <td> <%= order.category %> </td>
+            <td> <%= order.patients.active_patients.pluck(:patient_name).join(',') %> </td>
+            <td> <%= order.invoices.active_invoices.count %> </td>
+        </tr>
+    <% end %>
+    </table>
+</div>

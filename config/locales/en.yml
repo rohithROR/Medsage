@@ -31,3 +31,9 @@
 
 en:
   hello: "Hello world"
+  controllers:
+    home:
+      file_upload:
+        success: "%{parameter} successfully updated."
+        failure: "Something went wrong."
+        invalid_file: "Please upload a valid file with valid columns."
